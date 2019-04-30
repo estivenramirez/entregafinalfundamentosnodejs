@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <head>
+    {{>meta}}
+    <title>{{nombreAplicacion}}</title>
+    {{>scriptsCss}}
+  </head>
+
+  <body>
+    {{>header}}
+     <!-- Begin page content -->
+    <main role="main" class="container">
+
+      <div class="mt-4 mb-2 text-center">
+        <h2>Formulario para registrar usuarios</h2>
+        <p class="lead">Utilice este formulario para registrarse en la plataforma.</p>
+      </div>
+
+      <div class="row">
+
+          <div id="respuesta" class="col-md-12 order-md-1">
+              {{{respuestaAlertHtml respuesta}}}
+          </div>
+
+          <div class="col-md-12 order-md-1">
+            <h4 class="mb-3">Datos del aspirante</h4>
+            <form id="formRegistroUsuario" class="needs-validation" action="/registro" method="POST"  novalidate="">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="documento">Documento</label>
+                  <input type="number" class="form-control" id="documento" name="documento" placeholder="Documento de identidad" value="{{documento}}" required="">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" class="form-control" id="nombre" name="nombre" placeholder="" value="{{nombre}}" required="">
+                </div>
+              </div>
+              <div class="row">
+
+                <div class="col-md-6 mb-3">
+                  <label for="valor">Correo</label>
+                  <input type="email" class="form-control" id="correo" name="correo" placeholder="" value="{{correo}}" required="">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="valor">Teléfono</label>
+                  <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Ej: 2334455" value="{{telefono}}" required="" pattern="[0-9]{5,20}">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="nombre">Usuario</label>
+                  <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Username" value="{{usuario}}" required="">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="modalidad">Rol</label>
+                  <select class="custom-select d-block w-100" id="rol" name="rol">
+                    <option value="">Seleccione...</option>
+                    <option>ASPIRANTE</option>
+                    <option>COORDINADOR</option>
+                    <option>ADMINISTRADOR</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="valor">Contraseña</label>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="" value="{{password}}" required="">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="valor">Repetir Contraseña</label>
+                  <input type="password" class="form-control" id="passwordAgain" name="passwordAgain" placeholder="" value="{{paswordAgain}}" required="">
+                </div>
+              </div>
+
+              <hr class="mb-4">
+              <div class="row justify-content-md-center mb-5">
+                <div class="col-md-3">
+                  <button class="btn btn-primary btn-lg btn-block" type="submit">Enviar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+    {{>footer}}
+    {{>scriptsJs}}
+
+  <script type="text/javascript">
+		$.validator.setDefaults( {
+			submitHandler: function (form) {
+				form.submit();
+			}
+		});
+
+    $( "#formRegistroUsuario" ).on('submit', () => $('#respuesta').empty());
+
+		$( document ).ready( function () {
+
+			$( "#formRegistroUsuario" ).validate( {
+				rules: {
+					documento:  {
+                        required: true,
+                        digits: true,
+                        min: 1
+                    },
+                    nombre: "required",
+                    correo: {
+                        required: true,
+                        email: true
+                    },
+                    telefono: {
+                        required: true,
+                        digits: true
+                    },
+                    usuario: {
+                        required: true,
+                        minlength: 5
+                    },
+                    password: {
+                        required: true,
+                        minlength: 5
+                    },
+                    passwordAgain: {
+                        equalTo: "#password"
+                    }
+                },
+                messages: {
+                    documento: {
+                        required: " El documento de identidad es obligatorio.",
+                        digits: "Ingrese sólo números."
+                    },
+                    nombre: "El nombre es obligatorio.",
+                    correo: {
+                        required: "El correo es obligatorio.",
+                    },
+                    telefono: {
+                        required: "El telefono es obligatorio.",
+                        digits: "Ingrese sólo números.",
+                    },
+                    usuario: {
+                        required: "El ususario es obligatorio.",
+                        minlength: "Debe tener una longitud mínima de 5",
+                    },
+                    password: {
+                        required: "La contraseña es obligatoria.",
+                        minlength: "Debe tener una longitud mínima de 5",
+                    },
+                    passwordAgain: {
+                        equalTo: "Las contraseñas no coinciden"
+                    },
+                },
+                errorElement: "div",
+                errorPlacement: function (error, element) {
+                    error.addClass("invalid-feedback");
+                    element.addClass("is-invalid");
+                    element.removeClass("is-valid");
+
+                    if (element.prop("type") === "checkbox") {
+                        error.insertAfter(element.parent("label"));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+                success: function (label, element) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).addClass("is-valid").removeClass("is-invalid");
+                }
+            });
+        });
+	</script>
+
+  </body>
+</html>

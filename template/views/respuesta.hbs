@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <head>
+    {{>meta}}
+    <title>{{nombreAplicacion}}</title>
+    {{>scriptsCss}}
+  </head>
+  <body>
+    {{>header}}
+     <!-- Begin page content -->
+    <main role="main" class="container">
+      <div class="starter-template">
+        <h1>{{titulo}}</h1>
+        <div id="respuesta" class="col-md-12 order-md-1">
+            {{{respuestaAlertHtml respuesta}}}
+        </div>
+      </div>
+    </main>
+  </body>
+    {{>footer}}
+    {{>scriptsJs}}
+  </body>
+</html>

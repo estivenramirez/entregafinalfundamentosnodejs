@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <head>
+    {{>meta}}
+    <title>{{nombreAplicacion}}</title>
+    {{>scriptsCss}}
+  </head>
+  <body>
+    {{>header}}
+     <!-- Begin page content -->
+    <main role="main" class="container">
+        <div id="listaCoordinador" class="row my-2">
+            <div class="col-md-12 mt-4 mb-4 text-center" >
+            </div>
+            <div class="col-md-12">
+            {{{tablaListaUsuarios}}}
+            </div>
+        </div>
+    </main>
+    {{>footer}}
+    {{>scriptsJs}}
+
+    <script type="text/javascript">
+      $( document ).ready( function () {
+
+        $('input.estado').change(function() {
+
+          let $this = $(this)
+
+          let estado = $this.is(':checked') ? 'ACTIVO' : 'INACTIVO';
+          let idUsuario = $this.closest('tr').find('input[name="idUsuario"]').val()
+
+            $.ajax({
+                    data:  JSON.stringify({estado: estado, idUsuario: idUsuario}),
+                    url:   '/cambiarEstadoUsuario',
+                    type:  'patch',
+                    contentType: 'application/json; charset=utf-8'
+            }).done(function(respuesta) {
+
+              $.notify({
+                  message: respuesta.message 
+              },{
+                  type: respuesta.success ? 'success':'danger',
+                  delay: 5000,
+                  offset:{x: 20, y: 60 },
+                  spacing: 0
+              });
+
+            }).fail(function(e){
+                $.notify({
+                    message: 'Ocurrió un error al cambiar el estado del usuario.'
+                },{
+                    type: 'danger',
+                    delay: 5000,
+                    offset:{x: 20, y: 60 },
+                    spacing: 0
+                });
+
+            });
+        })
+
+      })
+    </script>
+  </body>
+</html>

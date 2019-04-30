@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <head>
+    {{>meta}}
+    <title>{{nombreAplicacion}}</title>
+    {{>scriptsCss}}
+  </head>
+  <body>
+    {{>header}}
+     <!-- Begin page content -->
+    <main role="main" class="container">
+      <div id="listaCursosEInscritos" class="row my-2">
+        <div class="col-md-12 mt-4 mb-4 text-center">
+          <h2>Cursos e Inscritos en curso (Coordinador)</h2>
+        </div>
+        <div class="card-columns">
+          {{#each cursos as |item index|}}
+            <div class="card">
+              <input value="{{item._id}}" type="hidden">
+              <div class="card-header" id="heading{{index}}" data-toggle="collapse" data-target="#collapse{{index}}" aria-expanded="false" aria-controls="collapse{{index}}">
+                  <h5 class="card-title btn-link">{{item.nombre}}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{#if item.valor}}{{item.valor}}{{else}}0{{/if}} COP</h6>
+                  <p class="card-text">{{item.descripcion}}</p>
+              </div>
+
+              <div id="collapse{{index}}" class="collapse hide" aria-labelledby="heading{{index}}" data-parent="#heading{{index}}">
+                <div class="card-body">
+                    <div class=" col-md-12 order-md-1 clsRespuesta">
+                    </div>
+                    <table class="table thead-dark table-striped" style="width:100%">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Documento</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Correo</th>
+                            <th scope="col">Teléfono</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+
+                    {{#each item.estudiantes as |estudiante idx|}}
+                            <tbody>
+                                <tr scope="row">
+                                    <td class="clsDocumento">{{estudiante.documento}}</td>
+                                    <td>{{estudiante.nombre}}</td>
+                                    <td>{{estudiante.correo}}</td>
+                                    <td>{{estudiante.telefono}}</td>
+                                     <input value="{{estudiante._id}}" type="hidden">
+                                    <td><button class="btn btn-danger" onclick="eliminar(this)" title="Eliminar usuario de este curso">Eliminar</button></td>
+                                </tr>
+                            </tbody>
+                      {{/each}}
+                  </table>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </main>
+    {{>footer}}
+    {{>scriptsJs}}
+
+    <script type="text/javascript">
+
+      function construirAlerta(tipo, mensaje) {
+        return `<div class="alert alert-dismissible fade show alert-${tipo}" role="alert">
+                  ${mensaje}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                  </button>
+                </div>`
+      }
+
+      function eliminar(element) {
+
+        let $element = $(element)
+        let idCurso = $(element).closest('.card').find('input').first().val()
+        let documento = $(element).closest('tr').find('input').first().val()
+
+        $.ajax({
+          data:  JSON.stringify({idCurso: idCurso, idUsuario: documento}),
+          url:   '/eliminarCursoUsuario',
+          type:  'post',
+          contentType: 'application/json; charset=utf-8'
+        }).done(function(respuesta) {
+            $element.closest('tr').fadeOut( "slow", function() {
+               $(this).remove()
+            });
+            $element.closest('.card-body').find('.clsRespuesta').html(construirAlerta(respuesta.success ? 'success': 'danger', respuesta.message))
+        }).fail(function(e){
+            $element.closest('.card-body').find('.clsRespuesta').html(construirAlerta('danger', 'Ocurrió un error al tratar de eliminar el usuario del curso'))
+        });
+      }
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <head>
+    {{>meta}}
+    <title>{{nombreAplicacion}}</title>
+    {{>scriptsCss}}
+  </head>
+  <body>
+    {{>header}}
+     <!-- Begin page content -->
+    <main role="main" class="container">
+      <div id="listaInteresado" class="row my-2">
+        <div class="col-md-12 mt-4 mb-4 text-center">
+          <h2>Cursos disponibles (Interesado)</h2>
+        </div>
+        <div class="card-columns">
+          {{#each cursosDisponibles as |item index|}}
+            <div class="card">
+              <div class="card-header" id="heading{{index}}" data-toggle="collapse" data-target="#collapse{{index}}" aria-expanded="false" aria-controls="collapse{{index}}">
+                  <h5 class="card-title btn-link">{{item.nombre}}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{#if item.valor}}{{item.valor}}{{else}}0{{/if}} COP</h6>
+                  <p class="card-text">{{truncateText item.descripcion 90 '...'}}</p>
+              </div>
+
+              <div id="collapse{{index}}" class="collapse hide" aria-labelledby="heading{{index}}" data-parent="#heading{{index}}">
+                <div class="card-body">
+                  <table class="" style="width:100%">
+                      <tbody>
+                          <tr>
+                              <td><strong>Descripción:</strong></td>
+                              <td>{{item.descripcion}}</td>
+                          </tr>
+                          <tr>
+                              <td><strong>Modalidad:</strong></td>
+                              <td>{{#if item.modalidad}}{{item.modalidad}}{{else}}-{{/if}}</td>
+                          </tr>
+                          <tr>
+                              <td><strong>Intensidad horaria:</strong></td>
+                              <td>{{#if item.intensidadHoraria}}{{item.intensidadHoraria}} horas {{else}}-{{/if}}</td>
+                          </tr>
+                      </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </main>
+    {{>footer}}
+    {{>scriptsJs}}
+  </body>
+</html>

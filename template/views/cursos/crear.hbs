@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <head>
+    {{>meta}}
+    <title>{{nombreAplicacion}}</title>
+    {{>scriptsCss}}
+  </head>
+
+  <body>
+    {{>header}}
+     <!-- Begin page content -->
+    <main role="main" class="container">
+
+      <div class="mt-4 mb-2 text-center">
+        <h2>Formulario para crear un nuevo curso</h2>
+        <p class="lead">Utilice este formulario para crear un nuevo curso.</p>
+      </div>
+
+      <div class="row">
+
+          <div id="respuesta" class="col-md-12 order-md-1">
+              {{{respuestaAlertHtml respuesta}}}
+            <input type="hidden" id="cursoCreadoId" value="{{curso._id}}">
+            <input type="hidden" id="cursoCreadoNombre" value="{{curso.nombreResult}}">
+         </div>
+         
+          <div class="col-md-12 order-md-1">
+            <h4 class="mb-3">Datos del curso</h4>
+            <form id="formCrear" action="/crearCurso" method="POST"  novalidate="">
+              <div class="form-row">
+                <div class="col-md-6 mb-3">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" class="form-control" id="nombre" name="nombre" placeholder="" value="{{curso.nombre}}" required="">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="modalidad">Modalidad</label>
+                  <select class="custom-select d-block w-100" id="modalidad" name="modalidad">
+                    <option value="">Seleccione...</option>
+                    <option>PRESENCIAL</option>
+                    <option>VIRTUAL</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-6 mb-3">
+                  <label for="valor">Valor</label>
+                  <input type="number" class="form-control" id="valor" name="valor" step="1000" placeholder="" value="{{curso.valor}}" required="">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="intensidadHoraria">Intensidad horaria</label>
+                  <input type="number" class="form-control" id="intensidadHoraria" name="intensidadHoraria" placeholder="Intensidad" value="{{curso.intensidadHoraria}}">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-6 mb-3">
+                  <label for="descripcion">Descripción</label>
+                  <textarea type="text" class="form-control" id="descripcion" name="descripcion" placeholder="" required="">{{curso.descripcion}}</textarea>
+                </div>
+              </div>
+
+              <hr class="mb-4">
+              <div class="form-row justify-content-md-center mb-5">
+                <div class="col-md-3">
+                  <button class="btn btn-primary btn-lg btn-block" type="submit">Enviar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+    {{>footer}}
+    {{>scriptsJs}}
+
+    <script type="text/javascript">
+      $.validator.setDefaults( {
+        submitHandler: function (form) {
+          form.submit();
+        }
+      } );
+
+      $( document ).ready( function () {
+
+        $( "#formCrear" ).on('submit', () => $('#respuesta').empty());
+
+        $( "#formCrear" ).validate( {
+          rules: {
+            {{!-- id:  {
+              required: true,
+              digits:true,
+              min: 1
+            }, --}}
+            nombre: "required",
+            valor:  {
+              required: true,
+              digits:true,
+              min: 0
+            },
+            descripcion: "required",
+            intensidadHoraria: {
+              min: 0
+            }
+          },
+          messages: {
+            id: {
+              required:"El id es obligatorio.",
+              digits:"Ingrese sólo números."
+            },
+            nombre: "El nombre es obligatorio.",
+            valor: {
+              required:"El valor es obligatorio.",
+              digits:"Ingrese sólo números."
+            },
+            descripcion: "La descripción es obligatoria.",
+          },
+          errorElement: "div",
+          errorPlacement: function ( error, element ) {
+            error.addClass( "invalid-feedback" );
+            element.addClass( "is-invalid" );
+            element.removeClass( "is-valid" );
+
+            if ( element.prop( "type" ) === "checkbox" ) {
+              error.insertAfter( element.parent( "label" ) );
+            } else {
+              error.insertAfter( element );
+            }
+          },
+          success: function ( label, element ) {
+            $( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+          },
+          highlight: function ( element, errorClass, validClass ) {
+            $( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+          },
+          unhighlight: function ( element, errorClass, validClass ) {
+            $( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+          }
+        });
+      });
+
+      let $idCurso = $('#cursoCreadoId')
+      debugger;
+      if($idCurso.val() != null && $idCurso.val() != '') {
+          socket.emit("nuevoCurso", { 
+            idCurso: $idCurso.val(), 
+            nombreCurso: $("cursoCreadoNombre").val()
+          })
+      }
+
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <head>
+    {{>meta}}
+    <title>{{nombreAplicacion}}</title>
+    {{>scriptsCss}}
+  </head>
+
+  <body>
+    {{>header}}
+     <!-- Begin page content -->
+    <main role="main" class="container">
+
+      <div class="mt-4 mb-2 text-center">
+        <h2>Formulario para inscribirse en un curso</h2>
+        <p class="lead">Utilice este formulario para inscribirse en un curso disponible.</p>
+      </div>
+
+      <div class="row">
+
+          <div id="respuesta" class="col-md-12 order-md-1">
+              {{{respuestaAlertHtml respuesta}}}
+          </div>
+
+          <div class="col-md-12 order-md-1">
+            <form id="formInscribir" class="needs-validation" action="/inscribirCurso" method="POST"  novalidate="">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 class="mb-3">Curso</h4>
+                    </div>
+                </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="idCurso">Curso</label>
+                  <select class="custom-select d-block w-100" id="idCurso" name="idCurso" required="">
+                    <option value="">Seleccione...</option>
+                    {{#each cursosDisponibles as |item index|}}
+                        <option value="{{item._id}}" {{#if (eq item._id ../idCurso)}}selected{{/if}} >{{item.nombre}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+              </div>
+
+              <hr class="mb-4">
+              <div class="row justify-content-md-center mb-5">
+                <div class="col-md-3">
+                  <button class="btn btn-primary btn-lg btn-block" type="submit">Enviar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+    {{>footer}}
+    {{>scriptsJs}}
+
+  <script type="text/javascript">
+		$.validator.setDefaults( {
+			submitHandler: function (form) {
+				form.submit();
+			}
+		});
+
+    $( "#formInscribir" ).on('submit', () => $('#respuesta').empty());
+
+		$( document ).ready( function () {
+
+			$( "#formInscribir" ).validate( {
+				rules: {
+					idCurso:  {
+            required: true,
+          },
+				},
+				messages: {
+					idCurso: {
+            required:"El curso es obligatorio.",
+          },
+				},
+				errorElement: "div",
+				errorPlacement: function ( error, element ) {
+					error.addClass( "invalid-feedback" );
+ 					element.addClass( "is-invalid" );
+ 					element.removeClass( "is-valid" );
+
+ 					if ( element.prop( "type" ) === "checkbox" ) {
+						error.insertAfter( element.parent( "label" ) );
+					} else {
+						error.insertAfter( element );
+					}
+				},
+				success: function ( label, element ) {
+					$( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+				},
+				highlight: function ( element, errorClass, validClass ) {
+					$( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+				},
+				unhighlight: function ( element, errorClass, validClass ) {
+					$( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+				}
+			});
+		});
+	</script>
+
+  </body>
+</html>
